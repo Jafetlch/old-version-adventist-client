@@ -1,0 +1,65 @@
+import Vue from 'vue'
+import Router from 'vue-router'
+import Page404 from '@/views/error/Page404.vue'
+import Login from '@/views/auth/Login'
+import Home from '@/views/Home'
+import Dashboard from '@/views/Dashboard'
+import UnionMain from '@/views/unions/UnionMain'
+
+Vue.use(Router)
+
+function myRole () {
+  const role = localStorage.getItem('user')
+  if (!role) {
+    return null
+  }
+  const data = JSON.parse(role)
+  return data.role_id
+}
+
+export default new Router({
+  mode: 'history',
+  base: process.env.BASE_URL,
+  routes: [
+    {
+      path: '*',
+      component: Page404
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: Login
+    },
+    {
+      path: '/',
+      name: 'home',
+      component: Home,
+      meta: {
+        requiredAuth: true
+      }
+    },
+    {
+      path: '/dashboard',
+      name: 'dashboard',
+      component: Dashboard,
+      meta: {
+        requiredAuth: true
+      }
+    },
+    {
+      path: '/unions',
+      name: 'union',
+      component: UnionMain,
+      meta: {
+        requiredAuth: true
+      },
+      beforeEnter: (to, from, next) => {
+        if (myRole() === 1) {
+          next()
+        } else {
+          next('/')
+        }
+      }
+    }
+  ]
+})
