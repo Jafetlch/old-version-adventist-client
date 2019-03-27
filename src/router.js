@@ -5,6 +5,7 @@ import Login from '@/views/auth/Login'
 import Home from '@/views/Home'
 import Dashboard from '@/views/Dashboard'
 import UnionMain from '@/views/unions/UnionMain'
+import GroupMain from '@/views/groups/GroupMain'
 
 Vue.use(Router)
 
@@ -55,6 +56,20 @@ export default new Router({
       },
       beforeEnter: (to, from, next) => {
         if (myRole() === 1) {
+          next()
+        } else {
+          next('/')
+        }
+      }
+    },
+    {
+      path: '/association-mission',
+      component: GroupMain,
+      meta: {
+        requiredAuth: true
+      },
+      beforeEnter: (to, from, next) => {
+        if (myRole() === 1 || myRole() === 3) {
           next()
         } else {
           next('/')

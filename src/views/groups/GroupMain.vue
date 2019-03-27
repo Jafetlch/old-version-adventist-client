@@ -8,8 +8,9 @@
     <Delete
       v-if="this.$store.getters.getDeleteUnions"
       title="Eliminar"
-      go="unions"
-      show="unions">
+      go="groups"
+      show="group"
+      have-belongs="true">
     </Delete>
     <template v-else>
       <!-- Edit  -->
@@ -17,17 +18,21 @@
         v-if="this.$store.getters.getEditUnions"
         :title="title"
         :action="!this.$store.getters.getEditUnions"
-        go="unions"
-        show="unions"
-        role="3">
+        go="groups"
+        show="group"
+        role="4"
+        is-selectable
+        belongs-to="unions">
       </CreateEdit>
       <!-- Create -->
       <CreateEdit
         v-else
         :title="title"
-        go="unions"
-        show="unions"
-        role="3">
+        go="groups"
+        show="group"
+        role="4"
+        is-selectable
+        belongs-to="unions">
       </CreateEdit>
       <!-- List -->
       <v-card>
@@ -48,8 +53,9 @@
             <td>{{ props.item.name }}</td>
             <td class="text-xs-left">{{ props.item.user.email }}</td>
             <template v-if="isFeather">
-              <td class="text-xs-left">{{ props.item.created_at }}</td>
-              <td class="text-xs-left">{{ props.item.updated_at }}</td>
+              <td class="text-sm-left">{{ props.item.union.name }}</td>
+              <td class="text-sm-left">{{ props.item.created_at }}</td>
+              <td class="text-sm-left">{{ props.item.updated_at }}</td>
             </template>
             <td v-if="!isEditDelete">
               <v-icon
@@ -83,15 +89,16 @@
 import featherMixing from '@/mixins/mixin_feather'
 import Delete from '@/components/crud/Delete'
 import CreateEdit from '@/components/crud/CreateEdit'
+import { getDataFrom } from '@/helper/snnipets'
 
 export default {
-  name: 'UnionMain',
+  name: 'GroupMain',
   components: {
     Delete,
     CreateEdit
   },
   data: () => ({
-    title: 'Uniones',
+    title: 'Asociaciones y Misiones',
     search: '',
     headers: []
   }),
@@ -103,17 +110,17 @@ export default {
     if (this.getData.length) {
       return
     }
-    this.$store.dispatch('getDataUnions')
+    getDataFrom(this.$store.getters.getCurrentUser.role_id, 'getDataGroups', 'getDataGroupsWithParams')
   },
   computed: {
     displayErrorSearch () {
       return `Tu busqueda por ${this.search ? this.search : ''} no obtivo resultados.`
     },
     getData () {
-      return this.$store.getters.getUnions
+      return this.$store.getters.getGroups
     },
     isEditDelete () {
-      return !!(this.$store.getters.getEditUnions || this.$store.getters.getDeleteUnions)
+      return !!(this.$store.getters.getEditGroups || this.$store.getters.getDeleteGroups)
     }
   },
   methods: {
@@ -122,6 +129,7 @@ export default {
         this.headers = [
           { text: 'Nombre', align: 'left', value: 'name' }, // sortable: false,
           { text: 'Email', value: 'email', sortable: false },
+          { text: 'Pertenece', value: 'union' },
           { text: 'Creado', value: 'created_at' },
           { text: 'Actualizado', value: 'updated_at' },
           { text: 'Actions', value: 'name', sortable: false }

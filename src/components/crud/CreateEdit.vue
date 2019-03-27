@@ -18,7 +18,7 @@
         ></v-text-field>
         <template v-if="isSelectable && isFeather">
           <v-combobox
-            v-model="select"
+            v-model="selected"
             label="Pertenece"
             :items="getSelectedData"
             item-value="getSelectada.id"
@@ -43,7 +43,7 @@
             <span class="font-weight-medium">Email: </span>{{ this.data.email}}
           </p>
           <p class="subheading" v-if="isSelectable && isFeather">
-            <span class="font-weight-medium">Pertenece: </span>{{ this.select.name }}
+            <span class="font-weight-medium">Pertenece: </span>{{ this.selected ? this.selected.name : '' }}
           </p>
           <p class="subheading">
             <span class="font-weight-medium">Password: </span>{{ this.pwd }}
@@ -76,7 +76,7 @@
           ></v-text-field>
           <template v-if="isSelectable && isFeather">
             <v-combobox
-              v-model="select"
+              v-model="selected"
               label="Pertenece"
               :items="getSelectedData"
               item-value="getSelectada.id"
@@ -203,10 +203,7 @@ export default {
       }
     },
     isFeather () {
-      if (this.$store.getters.currentUser) {
-        return this.$store.getters.currentUser.role_id === 1
-      }
-      return null
+      return this.$store.getters.getCurrentUser.role_id === 1
     }
   },
   methods: {
@@ -233,7 +230,7 @@ export default {
           'password': this.$data.pwd,
           'role': this.role,
           'current_user_id': this.$store.getters.currentUser.id,
-          'belongs_to_id': this.select === null ? null : this.select.id
+          'belongs_to_id': this.selected === null ? null : this.selected.id
         }).then((res) => {
           getDispatch(this.$store, this.go);
           this.clear();
@@ -244,7 +241,7 @@ export default {
           'email': this.$data.data.email,
           'user_id': this.$data.data.user_id,
           'current_user_id': this.$store.getters.currentUser.id,
-          'belongs_to_id': this.select === null ? null : this.select.id
+          'belongs_to_id': this.selected === null ? null : this.selected.id
         }).then((res) => {
           getCommitEdit(this.$store, this.go, false)
           getDispatch(this.$store, this.go)
