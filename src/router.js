@@ -6,6 +6,7 @@ import Home from '@/views/Home'
 import Dashboard from '@/views/Dashboard'
 import UnionMain from '@/views/unions/UnionMain'
 import GroupMain from '@/views/groups/GroupMain'
+import ChurchMain from '@/views/churches/ChurchMain'
 
 Vue.use(Router)
 
@@ -64,12 +65,28 @@ export default new Router({
     },
     {
       path: '/association-mission',
+      name: 'association-mission',
       component: GroupMain,
       meta: {
         requiredAuth: true
       },
       beforeEnter: (to, from, next) => {
         if (myRole() === 1 || myRole() === 3) {
+          next()
+        } else {
+          next('/')
+        }
+      }
+    },
+    {
+      path: '/churches',
+      name: 'churches',
+      component: ChurchMain,
+      meta: {
+        requiredAuth: true
+      },
+      beforeEnter: (to, from, next) => {
+        if (myRole() === 1 || myRole() === 4) {
           next()
         } else {
           next('/')

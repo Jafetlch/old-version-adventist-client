@@ -1,4 +1,4 @@
-import { getData } from '@/helper/data_getters'
+import { getData, getDataWhitParameters } from '@/helper/data_getters'
 
 const groupState = {
   GROUPS: {
@@ -49,6 +49,11 @@ const groupMutations = {
 const groupActions = {
   getDataGroups (context) {
     getData('groups').then((res) => {
+      context.commit('setGroups', res)
+    })
+  },
+  getDataGroupsWithParams (context) {
+    getDataWhitParameters('groups', context.getters.currentUser.id).then((res) => {
       context.commit('setGroups', res)
     })
   }

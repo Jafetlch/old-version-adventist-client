@@ -40,9 +40,9 @@ export function editData (api, id, parameters) {
 export function showData (api, id) {
   return new Promise((res, rej) => {
     Axios.get(`/api/${api}/${id}`)
-    .then((response) => {
+    .then(response => {
       res(response.data.data)
-    }).catch((error) => {
+    }).catch(error => {
       rej('Lastimosamente no se pudo encontrar los datos.')
     })
   })
@@ -51,14 +51,24 @@ export function showData (api, id) {
 export function deleteData (api, id) {
   return new Promise((res, rej) => {
     Axios.delete(`/api/${api}/${id}`)
-    .then((response) => {
+    .then(response => {
       if (response.data.response) {
         res('Se elimino correctamente.')
       } else {
         res('Lastimosamente no se pudo eliminar')
       }
-    }).catch((error) => {
+    }).catch(error => {
       rej('Lastimosamente no se pudo eliminar')
+    })
+  })
+}
+
+export function getDataWhitParameters (api, user_id) {
+  return new Promise((res, rej) => {
+    Axios.get(`/api/${api}/${user_id}`).then(response => {
+      res(response.data.data)
+    }).catch(error => {
+      rej('No se pudieron enconrar los datos.')
     })
   })
 }
