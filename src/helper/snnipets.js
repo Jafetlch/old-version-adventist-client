@@ -1,4 +1,5 @@
 import store from '@/store/store'
+// surfergirl121
 
 export function passGenerator () {
   let possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'

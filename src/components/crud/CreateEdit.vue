@@ -217,7 +217,7 @@ export default {
         this.pwd = passGenerator();
       }
       else {
-        getCommitEdit(this.$store, this.go, false);
+        getCommitEdit(this.go, false);
       }
       this.stepper = 1;
       this.$refs.form.reset();
@@ -243,7 +243,7 @@ export default {
           'current_user_id': this.$store.getters.currentUser.id,
           'belongs_to_id': this.selected === null ? null : this.selected.id
         }).then((res) => {
-          getCommitEdit(this.$store, this.go, false)
+          getCommitEdit(this.go, false)
           getDispatch(this.$store, this.go)
           this.clear()
         })

@@ -8,6 +8,7 @@ import { authState, authMutations, authActions } from '@/store/auth/authStore'
 import { unionState, unionGetters, unionMutations, unionActions } from '@/store/unionStore'
 import { groupState, groupGetters, groupMutations, groupActions } from '@/store/groupStore'
 import { churchState, churchGetters, churchMutations, churchActions } from '@/store/churchStore'
+import { departmentState, departmentGetters, departmentMutations, departmentActions } from '@/store/departmentStore'
 
 const user = getLocalUser()
 Vue.use(Vuex)
@@ -19,7 +20,8 @@ export default new Vuex.Store({
     ...authState,
     ...unionState,
     ...groupState,
-    ...churchState
+    ...churchState,
+    ...departmentState
   },
   getters: {
     getCurrentUser (state) {
@@ -27,18 +29,21 @@ export default new Vuex.Store({
     },
     ...unionGetters,
     ...groupGetters,
-    ...churchGetters
+    ...churchGetters,
+    ...departmentGetters
   },
   mutations: {
     ...authMutations,
     ...unionMutations,
     ...groupMutations,
-    ...churchMutations
+    ...churchMutations,
+    ...departmentMutations
   },
   actions: {
     ...authActions,
     ...unionActions,
     ...groupActions,
-    ...churchActions
+    ...churchActions,
+    ...departmentActions
   }
 })
