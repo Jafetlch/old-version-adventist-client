@@ -53,7 +53,7 @@ const churchActions = {
     })
   },
   getDataChurchesWithParams (context) {
-    getDataWhitParameters('churches', context.getters.currentUser.id).then((res) => {
+    getDataWhitParameters('churches', context.getters.getCurrentUser.id).then((res) => {
       context.commit('setChurches', res)
     })
   }

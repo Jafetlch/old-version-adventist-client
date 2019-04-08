@@ -146,17 +146,6 @@ export default {
         showData(this.show, getId(this.go)).then((response) => {
           this.data.id = response.id
           this.data.name = response.name
-          switch (this.belongsTo) {
-            case 'unions':
-              this.selected = response.union
-              break
-            case 'groups':
-              this.selected = response.group
-              break
-            case 'churches':
-              this.selected = response.church
-              break
-          }
         })
       }
     },
@@ -166,24 +155,24 @@ export default {
   },
   methods: {
     verificationSubmit () {
-      if (this.$refs.form.validate()) {
+      if (this.$refs.form.validate()) {        
         if (this.action) {
           createData(this.go, {
             'name': this.$data.data.name,
-            'current_user_id': this.$store.getters.currentUser.id,
+            'current_user_id': this.$store.getters.getCurrentUser.id,
             'user_id': this.selected === null ? null : this.selected
           }).then((res) => {
-            getDispatch(this.$store, this.go)
+            getDispatch(this.go)
             this.clear()
           })
         } else {
           editData(this.go, this.$data.data.id, {
             'name': this.$data.data.name,
-            'current_user_id': this.$store.getters.currentUser.id,
+            'current_user_id': this.$store.getters.getCurrentUser.id,
             'user_id': this.selected === null ? null : this.selected
           }).then((res) => {
-            getCommitEdit(this.$store, this.go, false)
-            getDispatch(this.$store, this.go)
+            getCommitEdit(this.go, false)
+            getDispatch(this.go)
             this.clear()
           })
         }

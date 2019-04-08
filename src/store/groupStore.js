@@ -53,7 +53,7 @@ const groupActions = {
     })
   },
   getDataGroupsWithParams (context) {
-    getDataWhitParameters('groups', context.getters.currentUser.id).then((res) => {
+    getDataWhitParameters('groups', context.getters.getCurrentUser.id).then((res) => {
       context.commit('setGroups', res)
     })
   }

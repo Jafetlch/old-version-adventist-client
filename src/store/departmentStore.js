@@ -53,7 +53,7 @@ const departmentActions = {
     })
   },
   getDataDepartmentsWithParams (context) {
-    getDataWhitParameters('departments', context.getters.currentUser.id).then((res) => {
+    getDataWhitParameters('departments', context.getters.getCurrentUser.id).then((res) => {
       context.commit('setDepartments', res)
     })
   }
