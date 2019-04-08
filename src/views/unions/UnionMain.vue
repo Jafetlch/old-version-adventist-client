@@ -144,7 +144,7 @@ export default {
       this.$store.commit('setIdUnions', id)
       this.$store.commit('setEditUnions', true)
     },
-    deleteid (id) {
+    deleteItem (id) {
       this.$store.commit('setIdUnions', id)
       this.$store.commit('setDeleteUnions', true)
     }

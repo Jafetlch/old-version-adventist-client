@@ -85,7 +85,7 @@
               required>
             </v-combobox>
           </template>
-          <v-btn color="primary" depressed :disabled="!valid" @click="verificationSubmit">
+          <v-btn color="primary" depressed :disabled="!valid" @click="saveData">
             Continuar
           </v-btn>
           <v-btn depressed @click="clear">
@@ -161,7 +161,7 @@ export default {
       return null
     } else if (this.isFeather) {
       //! Get data to the selected component
-      getDispatch(this.$store, this.belongsTo)
+      getDispatch(this.belongsTo)
     }
   },
   computed: {
@@ -222,29 +222,29 @@ export default {
       this.stepper = 1;
       this.$refs.form.reset();
     },
-    saveData(){
+    saveData (){
       if (this.action) {
         createData(this.go, {
           'name': this.$data.data.name,
           'email': this.$data.data.email,
           'password': this.$data.pwd,
           'role': this.role,
-          'current_user_id': this.$store.getters.currentUser.id,
+          'current_user_id': this.$store.getters.getCurrentUser.id,
           'belongs_to_id': this.selected === null ? null : this.selected.id
         }).then((res) => {
-          getDispatch(this.$store, this.go);
-          this.clear();
+          getDispatch(this.go)
+          this.clear()
         })
       } else {
         editData(this.go, this.$data.data.id, {
           'name': this.$data.data.name,
           'email': this.$data.data.email,
           'user_id': this.$data.data.user_id,
-          'current_user_id': this.$store.getters.currentUser.id,
+          'current_user_id': this.$store.getters.getCurrentUser.id,
           'belongs_to_id': this.selected === null ? null : this.selected.id
         }).then((res) => {
           getCommitEdit(this.go, false)
-          getDispatch(this.$store, this.go)
+          getDispatch(this.go)
           this.clear()
         })
       }

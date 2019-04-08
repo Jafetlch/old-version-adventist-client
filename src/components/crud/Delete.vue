@@ -9,7 +9,7 @@
               <p class="subheading" v-show="isFeather && haveBelongs"><span class="font-weight-medium">Pertenece: </span>{{ this.belongsTo.name}}</p>
               <p class="subheading"><span class="font-weight-medium">Email: </span>{{ this.user.email}}</p>
             </v-flex>
-            <v-btn color="primary" @click="deleteData">Eliminar</v-btn>
+            <v-btn color="primary" @click="deleteValue">Eliminar</v-btn>
             <v-btn flat @click="cancel">Cancel</v-btn>
           </v-flex>
         </v-layout>
@@ -20,6 +20,8 @@
 
 <script>
 import CustomCard from '@/components/CustomCard'
+import { deleteData, showData } from '@/helper/data_getters'
+import { getCommitDelete, getDispatch, getId } from '@/helper/snnipets'
 export default {
   name: 'Delete',
   components: {
@@ -48,16 +50,32 @@ export default {
     belongsTo: []
   }),
   created () {
-    // showDataRequested (this.show, getId(this.$store, this.go))
+    showData(this.show, getId(this.go)).then((response) => {
+      this.data = response
+      this.user = response.user
+      if (this.haveBelongs) {
+        switch (this.go) {
+          case 'groups':
+            this.belongsTo = response.union
+            break
+          case 'churches':
+            this.belongsTo = response.group
+            break
+        }
+      }
+    })
   },
   computed: {
-    isFeather() {
-      return this.$store.getters.currentUser.role_id === 1
+    isFeather () {
+      return this.$store.getters.getCurrentUser.role_id === 1
     }
   },
   methods: {
-    delete () {
-
+    deleteValue () {
+      deleteData(this.go, this.data.id).then((res) => {
+        getDispatch(this.go)
+        this.cancel()
+      })
     },
     cancel () {
       getCommitDelete(this.go, false)

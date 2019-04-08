@@ -6,7 +6,7 @@
       </h1>
     </section>
     <Delete
-      v-if="this.$store.getters.getDeleteUnions"
+      v-if="this.$store.getters.getDeleteGroups"
       title="Eliminar"
       go="groups"
       show="group"
@@ -15,9 +15,9 @@
     <template v-else>
       <!-- Edit  -->
       <CreateEdit
-        v-if="this.$store.getters.getEditUnions"
+        v-if="this.$store.getters.getEditGroups"
         :title="title"
-        :action="!this.$store.getters.getEditUnions"
+        :action="!this.$store.getters.getEditGroups"
         go="groups"
         show="group"
         role="4"
@@ -149,12 +149,12 @@ export default {
       }
     },
     editItem (id) {
-      this.$store.commit('setIdUnions', id)
-      this.$store.commit('setEditUnions', true)
+      this.$store.commit('setIdGroups', id)
+      this.$store.commit('setEditGroups', true)
     },
-    deleteid (id) {
-      this.$store.commit('setIdUnions', id)
-      this.$store.commit('setDeleteUnions', true)
+    deleteItem (id) {
+      this.$store.commit('setIdGroups', id)
+      this.$store.commit('setDeleteGroups', true)
     }
   }
 }

@@ -34,37 +34,40 @@
       </v-form>
     </CustomStepper>
     <v-card v-else>
-      <v-form v-model="valid" ref="form" lazy-validation>
-        <v-text-field
-          v-model="data.name"
-          label="Nombre"
-          :rules="nameRule"
-          :counter="nameCounter"
-          required>
-        </v-text-field>
-        <template v-if="isFeather">
-          <v-radio-group v-model="selectRadio" row class="">
-            <v-radio label="Uniones" value="unions"></v-radio>
-            <v-radio label="Grupos" value="groups"></v-radio>
-            <v-radio label="Iglesias" value="churches"></v-radio>
-          </v-radio-group>
-          <v-combobox
-            v-model="selected"
-            label="Pertenece"
-            :items="getSelectedData"
-            item-value="getSelectada.id"
-            item-text="name"
-            :rules="requiredRule"
+      <v-card-text>
+        <v-form v-model="valid" ref="form" lazy-validation>
+          {{ edit }}
+          <v-text-field
+            v-model="data.name"
+            label="Nombre"
+            :rules="nameRule"
+            :counter="nameCounter"
             required>
-          </v-combobox>
-        </template>
-        <v-btn color="primary" depressed :disabled="!valid" @click="verificationSubmit">
-          Continuar
-        </v-btn>
-        <v-btn depressed @click="clear">
-          Cancelar
-        </v-btn>
-      </v-form>
+          </v-text-field>
+          <template v-if="isFeather">
+            <v-radio-group v-model="selectRadio" row class="">
+              <v-radio label="Uniones" value="unions"></v-radio>
+              <v-radio label="Grupos" value="groups"></v-radio>
+              <v-radio label="Iglesias" value="churches"></v-radio>
+            </v-radio-group>
+            <v-combobox
+              v-model="selected"
+              label="Pertenece"
+              :items="getSelectedData"
+              item-value="getSelectada.id"
+              item-text="name"
+              :rules="requiredRule"
+              required>
+            </v-combobox>
+          </template>
+          <v-btn color="primary" depressed :disabled="!valid" @click="verificationSubmit">
+            Continuar
+          </v-btn>
+          <v-btn depressed @click="clear">
+            Cancelar
+          </v-btn>
+        </v-form>
+      </v-card-text>
     </v-card>
   </CustomCard>
 </template>

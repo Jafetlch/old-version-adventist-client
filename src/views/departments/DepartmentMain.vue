@@ -135,12 +135,12 @@ export default {
       }
     },
     editItem (id) {
-      this.$store.commit('setIdUnions', id)
-      this.$store.commit('setEditUnions', true)
+      this.$store.commit('setIdDepartments', id)
+      this.$store.commit('setEditDepartments', true)
     },
-    deleteid (id) {
-      this.$store.commit('setIdUnions', id)
-      this.$store.commit('setDeleteUnions', true)
+    deleteItem (id) {
+      this.$store.commit('setIdDepartments', id)
+      this.$store.commit('setDeleteDepartments', true)
     }
   }
 }

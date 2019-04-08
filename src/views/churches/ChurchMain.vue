@@ -6,7 +6,7 @@
       </h1>
     </section>
     <Delete
-      v-if="this.$store.getters.getDeleteUnions"
+      v-if="this.$store.getters.getDeleteChurches"
       title="Eliminar"
       go="churches"
       show="church"
@@ -15,9 +15,9 @@
     <template v-else>
       <!-- Edit  -->
       <CreateEdit
-        v-if="this.$store.getters.getEditUnions"
+        v-if="this.$store.getters.getEditChurches"
         :title="title"
-        :action="!this.$store.getters.getEditUnions"
+        :action="!this.$store.getters.getEditChurches"
         go="churches"
         show="church"
         role="5"
@@ -149,12 +149,12 @@ export default {
       }
     },
     editItem (id) {
-      this.$store.commit('setIdUnions', id)
-      this.$store.commit('setEditUnions', true)
+      this.$store.commit('setIdChurches', id)
+      this.$store.commit('setEditChurches', true)
     },
-    deleteid (id) {
-      this.$store.commit('setIdUnions', id)
-      this.$store.commit('setDeleteUnions', true)
+    deleteItem (id) {
+      this.$store.commit('setIdChurches', id)
+      this.$store.commit('setDeleteChurches', true)
     }
   }
 }

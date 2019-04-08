@@ -3,7 +3,7 @@ import store from '@/store/store'
 import router from '@/router'
 
 var api = axios.create({
-  baseURL: 'http://127.0.0.1:6060',
+  baseURL: 'http://localhost:6060',
   'headers': {
     'X-Requested-With': 'XMLHttpRequest'
   }
@@ -11,8 +11,7 @@ var api = axios.create({
 
 api.interceptors.request.use((config) => {
   config.headers = {
-    'special_token': 'f34th3r.io',
-    'Authorization': `Bearer ${store.getters.getCurrentUser ? store.getters.getCurrentUser.token : ''}`
+    Authorization: `Bearer ${store.getters.getCurrentUser ? store.getters.getCurrentUser.token : ''}`
   }
   return config
 }, function (error) {

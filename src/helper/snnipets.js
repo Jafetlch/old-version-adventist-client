@@ -81,13 +81,13 @@ export function getDispatch (value) {
       return store.dispatch('getDataUnions')
 
     case 'groups' || 'group':
-      return getDataFrom(store, store.getters.currentUser.role_id, 'getDataGroups', 'getDataGroupsWithParams')
+      return getDataFrom(store.getters.getCurrentUser.role_id, 'getDataGroups', 'getDataGroupsWithParams')
 
     case 'churches' || 'church':
-      return getDataFrom(store, store.getters.currentUser.role_id, 'getDataChurches', 'getDataChurchesWithParams')
+      return getDataFrom(store.getters.getCurrentUser.role_id, 'getDataChurches', 'getDataChurchesWithParams')
 
     case 'departments' || 'departments':
-      return getDataFrom(store, store.getters.currentUser.role_id, 'getDataDepartments', 'getDataDepartmentsWithParams')
+      return getDataFrom(store.getters.getCurrentUser.role_id, 'getDataDepartments', 'getDataDepartmentsWithParams')
 
     case 'user' || 'user':
       return store.dispatch('getDataUsers')
