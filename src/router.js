@@ -8,6 +8,7 @@ import UnionMain from '@/views/unions/UnionMain'
 import GroupMain from '@/views/groups/GroupMain'
 import ChurchMain from '@/views/churches/ChurchMain'
 import DepartmentMain from '@/views/departments/DepartmentMain'
+import AdvertisementMain from '@/views/advertisements/AdvertisementMain'
 
 Vue.use(Router)
 
@@ -97,6 +98,20 @@ export default new Router({
     {
       path: '/departments',
       component: DepartmentMain,
+      meta: {
+        requiredAuth: true
+      },
+      beforeEnter: (to, from, next) => {
+        if (myRole() === 1 || myRole() === 5 || myRole() === 3 || myRole() === 4) {
+          next()
+        } else {
+          next('/')
+        }
+      }
+    },
+    {
+      path: '/advertisements',
+      component: AdvertisementMain,
       meta: {
         requiredAuth: true
       },

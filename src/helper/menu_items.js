@@ -58,13 +58,13 @@ export function menuItems (currentUserRoleId) {
         {
           icon: 'add',
           text: 'Añadir',
-          route: '/add-advertisement',
+          route: '/advertisements',
           show: (currentUserRoleId === 1 || currentUserRoleId === 3 || currentUserRoleId === 4 || currentUserRoleId === 5)
         },
         {
           icon: 'folder_open',
           text: 'Publicationes',
-          route: '/publish-advertisement',
+          route: '/test',
           show: (currentUserRoleId === 1 || currentUserRoleId === 3 || currentUserRoleId === 4 || currentUserRoleId === 5)
         }
       ]

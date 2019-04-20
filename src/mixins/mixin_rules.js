@@ -12,6 +12,21 @@ const formRulesMixin = {
     ],
     requiredRule: [
       value => !!value || 'Es requerido.'
+    ],
+    titleRules: [
+      v => !!v || 'Title is required',
+      v => (v && v.length >= 5) || 'Title must be more than 5 characters',
+      v => (v && v.length <= 50) || 'Title must be less than 50 characters'
+    ],
+    descriptionRules: [
+      v => !!v || 'Description is required',
+      v => (v && v.length >= 5) || 'Description must be more than 5 characters',
+      v => (v && v.length <= 1000) || 'Description must be less than 50 characters'
+    ],
+    fragmentRules: [
+      v => !!v || 'Description is required',
+      v => (v && v.length >= 5) || 'Description must be more than 5 characters',
+      v => (v && v.length <= 80) || 'Description must be less than 50 characters'
     ]
   })
 }

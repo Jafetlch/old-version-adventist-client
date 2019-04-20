@@ -11,6 +11,16 @@ export function getData (api) {
   })
 }
 
+export function getDataWithParams (api, user_id) {
+  return new Promise((res, rej) => {
+      Axios.get(`/api/${api}/${user_id}`).then((response) => {
+        res(response.data.data)
+      }).catch((e) => {
+        rej("No se pudieron enconrar los datos.")
+      })
+  })
+}
+
 export function createData (api, parameters) {
   return new Promise((res, rej) => {
     Axios.post(`/api/${api}`, parameters)
