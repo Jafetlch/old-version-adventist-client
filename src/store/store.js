@@ -16,6 +16,9 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    // FEATHER_URL: 'http://192.168.0.9:6060/',
+    FEATHER_URL: 'http://localhost:6060/',
+    // FEATHER_URL: 'http://adnews-back.f34th3r.io/', //! online server
     LOADING: false,
     USER: user,
     ...authState,
@@ -28,6 +31,9 @@ export default new Vuex.Store({
   getters: {
     getCurrentUser (state) {
       return state.USER
+    },
+    getFeatherUrl (state) {
+      return state.FEATHER_URL
     },
     ...unionGetters,
     ...groupGetters,

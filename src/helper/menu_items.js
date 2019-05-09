@@ -64,7 +64,7 @@ export function menuItems (currentUserRoleId) {
         {
           icon: 'folder_open',
           text: 'Publicationes',
-          route: '/test',
+          route: '/my-advertisements',
           show: (currentUserRoleId === 1 || currentUserRoleId === 3 || currentUserRoleId === 4 || currentUserRoleId === 5)
         }
       ]

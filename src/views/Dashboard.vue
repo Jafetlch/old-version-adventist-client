@@ -2,50 +2,53 @@
   <v-container class="px-0 py-0">
     <v-card flat color="bg">
       <v-btn color="error" @click="featherTest">Test</v-btn>
+      <p>{{ data }}</p>
     </v-card>
   </v-container>
 </template>
 
 <script>
-import { getDataFrom } from '@/helper/snnipets'
+/* eslint-disable */
 
-// import Axios from '@/plugins/axios'
+import { getData, showData } from '@/helper/data_getters'
+
+import Axios from '@/plugins/axios'
 // import { createData } from '@/helper/data_getters'
 
 export default {
   name: 'Dashboard',
+  data: () => ({
+    data: ''
+  }),
   mounted () {
-    if (this.getData.length) {
-      return
-    }
-    getDataFrom(this.$store.getters.getCurrentUser.role_id, 'getDataDepartments', 'getDataDepartmentsWithParams')
+    // if (this.getData.length) {
+    //   return
+    // }
+    // this.$store.dispatch('getAdvertisements')
   },
   methods: {
-    getData () {
-      return this.$store.getters.getDepartments
-    },
+    // getData () {
+    //   return this.$store.getters.getAdvertisments
+    // },
     featherTest () {
-      // createData('unions', {
-      //     'name': 'this.$data.data.name',
-      //     'email': 'this.$data.data.email',
-      //     'password': 'this.$data.pwd',
-      //     'role': 1,
-      //     'current_user_id': 1,
-      //     'belongs_to_id': null
-      //   }).then((res) => {
-      //     console.log(res)
-      //   })
-      // Axios.post(`/api/unions`, {
-      //   'name': 'test'
+      // getData('advertisements').then((res) => {
+      //   console.log(res)
       // })
-      // .then((response) => {
-      //   if (response.data.response) {
-      //     res('Se ha creado satisfactoriamente.')
-      //   }
-      // }).catch((error) => {
-      //   rej('Lastimosamente no se pudo crear.')
+      // showData('department', { 'id': '1002'}).then(res => console.log(res))
+      // Axios.post('api/advertisement', { 'id': '1002'}).then(res => {
+      //   console.log(res.data.data[0].code)
       // })
-      // console.log(this.$store.getters.getDepartments)
+      // Axios.put('api/churches/10', {
+      //   'title': 'test'
+      // }).then(res => {
+      //   console.log('hola')
+      // })
+      // Axios.put('api/test/ad/update/10', {
+      //   'title': 'test 01'
+      // }).then(res => {
+      //   console.log('hola')
+      // })
+      console.log(this.$store.getters.getCurrentUser.code)
     }
   }
 }

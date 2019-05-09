@@ -9,6 +9,7 @@ import GroupMain from '@/views/groups/GroupMain'
 import ChurchMain from '@/views/churches/ChurchMain'
 import DepartmentMain from '@/views/departments/DepartmentMain'
 import AdvertisementMain from '@/views/advertisements/AdvertisementMain'
+import MyAdvertisements from '@/views/advertisements/MyAdvertisements'
 
 Vue.use(Router)
 
@@ -37,10 +38,10 @@ export default new Router({
     {
       path: '/',
       name: 'home',
-      component: Home,
-      meta: {
-        requiredAuth: true
-      }
+      component: Home
+      // meta: {
+      //   requiredAuth: true
+      // }
     },
     {
       path: '/dashboard',
@@ -97,6 +98,7 @@ export default new Router({
     },
     {
       path: '/departments',
+      name: 'departments',
       component: DepartmentMain,
       meta: {
         requiredAuth: true
@@ -111,7 +113,23 @@ export default new Router({
     },
     {
       path: '/advertisements',
+      name: 'advertisements',
       component: AdvertisementMain,
+      meta: {
+        requiredAuth: true
+      },
+      beforeEnter: (to, from, next) => {
+        if (myRole() === 1 || myRole() === 5 || myRole() === 3 || myRole() === 4) {
+          next()
+        } else {
+          next('/')
+        }
+      }
+    },
+    {
+      path: '/my-advertisements',
+      name: 'my-advertisements',
+      component: MyAdvertisements,
       meta: {
         requiredAuth: true
       },

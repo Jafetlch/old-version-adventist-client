@@ -4,8 +4,8 @@
       <v-form v-model="valid" slot="step-one" ref="form" lazy-validation>
         {{ edit }}
         <v-img
-          :src="data.imageCharge ? `${this.$store.getters.getFeatherUrl}images/${data.path}` : imageUrl"
-          :lazy-src="data.imageCharge ? `${this.$store.getters.getFeatherUrl}images/${data.path}` : imageUrl"
+          :src="data.imageCharge ? `${this.$store.getters.getFeatherUrl}images-advertisements/${data.path}` : imageUrl"
+          :lazy-src="data.imageCharge ? `${this.$store.getters.getFeatherUrl}images-advertisements/${data.path}` : imageUrl"
           aspect-ratio="0"
           height="400px"
           class="grey lighten-4"
@@ -44,7 +44,7 @@
         <v-text-field
           v-model="data.title"
           :rules="titleRules"
-          :counter="50"
+          :counter="80"
           label="Título"
           required>
         </v-text-field>
@@ -180,8 +180,8 @@
       <v-flex slot="step-two">
         <v-flex class="mb-4">
           <v-img
-            :src="data.imageCharge ? `${this.$store.getters.getFeatherUrl}images/${data.path}` : imageUrl"
-            :lazy-src="data.imageCharge ? `${this.$store.getters.getFeatherUrl}images/${data.path}` : imageUrl"
+            :src="data.imageCharge ? `${this.$store.getters.getFeatherUrl}images-advertisements/${data.path}` : imageUrl"
+            :lazy-src="data.imageCharge ? `${this.$store.getters.getFeatherUrl}images-advertisements/${data.path}` : imageUrl"
             aspect-ratio="0"
             height="400px"
             class="grey lighten-4">
@@ -215,7 +215,7 @@
           </p>
 
         </v-flex>
-        <v-btn color="primary" @click="saveData" v-text="action ? 'Crear' : 'Editar'"></v-btn>
+        <v-btn color="primary" @click="saveData" v-text="action ? 'Crear' : 'Guardar'"></v-btn>
         <v-btn flat @click="stepper = 1">Cancel</v-btn>
       </v-flex>
 
@@ -228,8 +228,9 @@ import formRulesMixin from '@/mixins/mixin_rules'
 import CustomCard from '@/components/CustomCard'
 import CustomStepper from '@/components/CustomStepper'
 
-import { createData, editData, showData, getDataWithParams } from '@/helper/data_getters'
+import { createData, getDataWithParams } from '@/helper/data_getters'
 import { getCommitEdit, getDispatch, getDataFrom } from '@/helper/snnipets'
+import Axios from '@/plugins/axios'
 
 export default {
   name: 'CreateEditAdvertisements',
@@ -300,7 +301,7 @@ export default {
       if (this.getSelectDepartment.length) {
         return
       }
-      getDataFrom(this.$store, this.$store.getters.getCurrentUser.role_id, 'getDataDepartments', 'getDataDepartmentsWithParams')
+      getDataFrom(this.$store.getters.getCurrentUser.role_id, 'getDataDepartments', 'getDataDepartmentsWithParams')
     }
   },
   watch: {
@@ -337,19 +338,20 @@ export default {
     /* eslint-disable */
     edit () {
       if (!this.action) {
-        showData('advertisement', this.$store.getters.getIdAdvertisements).then((response) => {
-          this.data.id = response[0].id
-          this.data.title = response[0].title
-          this.data.description = response[0].description
-          this.data.fragment = response[0].fragment
-          this.data.published = response[0].published === 1
-          this.departmentSelected = response[0].department
-          this.date = response[0].eventDate
-          this.time = response[0].time
-          this.data.place = response[0].place
-          this.data.guest = response[0].guest ? response[0].guest.split(",") : ''
+        Axios.post('api/advertisement', { 'id': this.$store.getters.getIdAdvertisements }).then(res => {
+          this.data.id = res.data.data[0].id
+          this.data.title = res.data.data[0].title
+          this.data.description = res.data.data[0].description
+          this.data.fragment = res.data.data[0].fragment
+          this.data.published = res.data.data[0].published === 1
+          this.data.publicationDate = res.data.data[0].publicationDate
+          this.departmentSelected = res.data.data[0].department
+          this.date = res.data.data[0].eventDate
+          this.time = res.data.data[0].time
+          this.data.place = res.data.data[0].place
+          this.data.guest = res.data.data[0].guest ? res.data.data[0].guest.split(",") : ''
           this.data.imageCharge = true
-          this.data.path = response[0].image.path
+          this.data.path = res.data.data[0].image.path
         })
       }
     },
@@ -377,7 +379,7 @@ export default {
       }
     },
     clear () {
-      getCommitEdit(this.$store, this.go, false)
+      getCommitEdit(this.go, false)
       this.stepper = 1
       // this.$refs.form.reset()
 
@@ -387,7 +389,8 @@ export default {
           description: null,
           fragment: null,
           place: null,
-          guest: null
+          guest: null,
+          publicationDate: null
       }
       this.imageUrl= ''
       this.date = null
@@ -399,32 +402,33 @@ export default {
 
       this.$store.commit('setEditAdvertisements', false)
       this.$store.commit('setDeleteAdvertisements', false)
-      if (!this.action) { this.$router.push('/publish-advertisement') }
+      if (!this.action) { this.$router.push({ name: 'my-advertisements'}) }
     },
     saveData(){
       if (this.action) {
-          createData(this.go, {
-              'title': this.$data.data.title,
-              'department_id': this.departmentSelected.id,
-              'parent_code': this.parentSelected.code,
-              'publicationDate': new Date().toISOString().substr(0, 10),
-              'eventDate': this.$data.date,
-              'fragment': this.$data.data.fragment,
-              'description': this.$data.data.description,
-              'published': this.$data.data.published === true ? '1' : '0',
-              'image': this.$data.imageUrl,
-              'time': this.$data.time,
-              'place': this.$data.data.place,
-              'guest': this.$data.data.guest.toString()
-          }).then((res) => {
-              this.clear()
-          })
-          // TODO Add finally
-      } else {
-        editData(this.go, this.$data.data.id, {
+        createData(this.go, {
           'title': this.$data.data.title,
           'department_id': this.departmentSelected.id,
+          'parent_code': this.isFeather ? this.parentSelected.code : this.$store.getters.getCurrentUser.code,
           'publicationDate': new Date().toISOString().substr(0, 10),
+          'eventDate': this.$data.date,
+          'fragment': this.$data.data.fragment,
+          'description': this.$data.data.description,
+          'published': this.$data.data.published === true ? '1' : '0',
+          'image': this.$data.imageUrl,
+          'time': this.$data.time,
+          'place': this.$data.data.place,
+          'guest': this.$data.data.guest.toString()
+        }).then((res) => {
+          this.clear()
+        })
+        // TODO Add finally
+      } else {
+       Axios.put('api/test/ad/update/' + this.$data.data.id, {
+          'title': this.$data.data.title,
+          'department_id': this.departmentSelected.id,
+          'parent_code': this.isFeather ? this.parentSelected.code : this.$store.getters.getCurrentUser.code,
+          'publicationDate': this.$data.data.publicationDate,
           'eventDate': this.$data.date,
           'fragment': this.$data.data.fragment,
           'description': this.$data.data.description,
@@ -435,11 +439,11 @@ export default {
           'time': this.$data.time,
           'place': this.$data.data.place,
           'guest': this.$data.data.guest.toString(),
-        }).then((res) => {
-          getCommitEdit(this.$store, this.go, false)
-          getDispatch(this.$store, this.go)
+        }).then(res => {
+          getCommitEdit(this.go, false)
+          getDispatch(this.go)
           this.clear()
-          this.$router.push('/publish-advertisement')
+          this.$router.push({ name: 'my-advertisements'})
         }).catch(err => console.log(err))
       }
     },

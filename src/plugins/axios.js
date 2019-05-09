@@ -4,6 +4,7 @@ import router from '@/router'
 
 var api = axios.create({
   baseURL: 'http://localhost:6060',
+  // baseURL: 'http://adnews-back.f34th3r.io', //! online server
   'headers': {
     'X-Requested-With': 'XMLHttpRequest'
   }

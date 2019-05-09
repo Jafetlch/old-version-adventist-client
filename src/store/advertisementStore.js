@@ -1,4 +1,4 @@
-import { getData, getDataWhitParameters } from '@/helper/data_getters'
+import { getData } from '@/helper/data_getters'
 
 const advertisementState = {
   ADVERTISEMENTS: {
@@ -7,6 +7,9 @@ const advertisementState = {
     create: false,
     edit: false,
     delete: false
+  },
+  DISPLAYAD: {
+    data: []
   }
 }
 
@@ -25,6 +28,9 @@ const advertisementGetters = {
   },
   getDeleteAdvertisements (state) {
     return state.ADVERTISEMENTS.delete
+  },
+  getDisplayAd (state) {
+    return state.DISPLAYAD.data
   }
 }
 
@@ -43,17 +49,15 @@ const advertisementMutations = {
   },
   setDeleteAdvertisements (state, payload) {
     state.ADVERTISEMENTS.delete = payload
+  },
+  setDisplayAd (state, payload) {
+    state.DISPLAYAD.data = payload
   }
 }
 
 const advertisementActions = {
-  getDataAdvertisements (context) {
+  getAdvertisements (context) {
     getData('advertisements').then((res) => {
-      context.commit('setAdvertisements', res)
-    })
-  },
-  getDataAdvertisementsWithParams (context) {
-    getDataWhitParameters('advertisements', context.getters.getCurrentUser.id).then((res) => {
       context.commit('setAdvertisements', res)
     })
   }
