@@ -10,6 +10,7 @@ import ChurchMain from '@/views/churches/ChurchMain'
 import DepartmentMain from '@/views/departments/DepartmentMain'
 import AdvertisementMain from '@/views/advertisements/AdvertisementMain'
 import MyAdvertisements from '@/views/advertisements/MyAdvertisements'
+import Settings from '@/views/auth/Settings'
 
 Vue.use(Router)
 
@@ -130,6 +131,21 @@ export default new Router({
       path: '/my-advertisements',
       name: 'my-advertisements',
       component: MyAdvertisements,
+      meta: {
+        requiredAuth: true
+      },
+      beforeEnter: (to, from, next) => {
+        if (myRole() === 1 || myRole() === 5 || myRole() === 3 || myRole() === 4) {
+          next()
+        } else {
+          next('/')
+        }
+      }
+    },
+    {
+      path: '/settings',
+      name: 'settings',
+      component: Settings,
       meta: {
         requiredAuth: true
       },
