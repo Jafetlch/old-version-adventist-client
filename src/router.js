@@ -60,7 +60,7 @@ export default new Router({
         requiredAuth: true
       },
       beforeEnter: (to, from, next) => {
-        if (myRole() === 1) {
+        if (myRole() === '1') {
           next()
         } else {
           next('/')
@@ -75,7 +75,7 @@ export default new Router({
         requiredAuth: true
       },
       beforeEnter: (to, from, next) => {
-        if (myRole() === 1 || myRole() === 3) {
+        if (myRole() === '1' || myRole() === '3') {
           next()
         } else {
           next('/')
@@ -90,7 +90,7 @@ export default new Router({
         requiredAuth: true
       },
       beforeEnter: (to, from, next) => {
-        if (myRole() === 1 || myRole() === 4) {
+        if (myRole() === '1' || myRole() === '4') {
           next()
         } else {
           next('/')
@@ -105,7 +105,7 @@ export default new Router({
         requiredAuth: true
       },
       beforeEnter: (to, from, next) => {
-        if (myRole() === 1 || myRole() === 5 || myRole() === 3 || myRole() === 4) {
+        if (myRole() === '1' || myRole() === '5' || myRole() === '3' || myRole() === '4') {
           next()
         } else {
           next('/')
@@ -120,7 +120,7 @@ export default new Router({
         requiredAuth: true
       },
       beforeEnter: (to, from, next) => {
-        if (myRole() === 1 || myRole() === 5 || myRole() === 3 || myRole() === 4) {
+        if (myRole() === '1' || myRole() === '5' || myRole() === '3' || myRole() === '4') {
           next()
         } else {
           next('/')
@@ -135,7 +135,7 @@ export default new Router({
         requiredAuth: true
       },
       beforeEnter: (to, from, next) => {
-        if (myRole() === 1 || myRole() === 5 || myRole() === 3 || myRole() === 4) {
+        if (myRole() === '1' || myRole() === '5' || myRole() === '3' || myRole() === '4') {
           next()
         } else {
           next('/')
@@ -150,7 +150,7 @@ export default new Router({
         requiredAuth: true
       },
       beforeEnter: (to, from, next) => {
-        if (myRole() === 1 || myRole() === 5 || myRole() === 3 || myRole() === 4) {
+        if (myRole() === '1' || myRole() === '5' || myRole() === '3' || myRole() === '4') {
           next()
         } else {
           next('/')

@@ -203,7 +203,7 @@ export default {
       }
     },
     isFeather () {
-      return this.$store.getters.getCurrentUser.role_id === 1
+      return this.$store.getters.getCurrentUser.role_id === '1'
     }
   },
   methods: {
