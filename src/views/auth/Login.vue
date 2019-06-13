@@ -35,7 +35,7 @@
               ></v-text-field>
               <v-content class="text-xs-center align-center">
                 <v-btn color="primary" flat :depressed="!valid" @click="authenticate">
-                  Sing In
+                  Sign In
                 </v-btn>
               </v-content>
             </v-form>

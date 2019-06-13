@@ -129,7 +129,8 @@
       </v-card>
     </CustomCard>
    <v-card>
-      <v-card-text v-if="this.$store.getters.getCurrentUser.role_id === 1">
+     <!-- //* On Beta -->
+      <v-card-text v-if="this.$store.getters.getCurrentUser.role_id.toString() === '1'">
         <span class="title">Comentarios:</span>
         <v-expansion-panel>
           <v-expansion-panel-content
@@ -143,7 +144,8 @@
       </v-expansion-panel>
       </v-card-text>
       <v-divider></v-divider>
-      <v-card-text v-if="this.$store.getters.getCurrentUser.role_id !== 1">
+      <!-- //* On Beta -->
+      <v-card-text v-if="this.$store.getters.getCurrentUser.role_id.toString() !== '1'">
         <vue-editor v-model="content"></vue-editor>
         <v-flex xs12>
           <v-btn block color="success" @click="saveData('comment')">Enviar</v-btn>
@@ -215,15 +217,15 @@ export default {
   },
   methods: {
     getData () {
-      if (this.$store.getters.getCurrentUser.role_id === 1) {
+      if (this.$store.getters.getCurrentUser.role_id.toString() === '1') { //* on beta
         getData('beta/comments').then(res => {
-          console.log(res)
+          // console.log(res)
           this.dataComment = res
           return res
         })
       } else {
         getData('beta/comments/user').then(res => {
-          console.log(res.data)
+          // console.log(res.data)
           this.dataComment = res
           return res
         })
@@ -259,8 +261,19 @@ export default {
           }
         })
       } else if (type === 'comment') {
-        //
-      } else {
+        createData('beta/comments/', {
+          'comment': this.content
+        }).then(res => {
+          if (res === true) {
+            this.snackbar = true
+            this.snackbarMessage = 'Gracias su comentario será revisado!'
+            this.content = ''
+          } else {
+            this.snackbar = true
+            this.snackbarMessage = 'Hubó un error, lo lamentamos.'
+          }
+        })
+      } else if (type === 'pwd') {
         createData('user/change/password', {
           'pwd_old': this.dataForm.pwdOld,
           'pwd_new': this.dataForm.pdwNew

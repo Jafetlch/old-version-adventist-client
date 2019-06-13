@@ -9,7 +9,7 @@ const advertisementState = {
     delete: false
   },
   DISPLAYAD: {
-    data: []
+    data: null
   }
 }
 

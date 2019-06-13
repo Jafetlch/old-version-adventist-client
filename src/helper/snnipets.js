@@ -67,7 +67,7 @@ export function getCommitDelete (value, boolean) {
 }
 
 export function getDataFrom (role, withOutParameters, withParameters) {
-  if (role === 1) {
+  if (role === '1') {
     store.dispatch(withOutParameters)
   } else {
     store.dispatch(withParameters)

@@ -1,11 +1,27 @@
 <template>
   <CustomCard :title="action ? 'Crear' : 'Editar'">
-    <CustomStepper :title="title" :stepper="stepper">
+    <v-snackbar
+      v-model="snackbar"
+      :timeout="6000"
+      :color="snackbar_color"
+      :top="true"
+      :right="true">
+      {{ snackbar_message }}
+      <v-btn
+        flat
+        @click="snackbar = false">
+        Close
+      </v-btn>
+    </v-snackbar>
+    <v-layout v-if="circular_progress" row wrap align-center justify-center pa-5>
+      <v-progress-circular size="45" indeterminate color="primary"></v-progress-circular>
+    </v-layout>
+    <CustomStepper v-else :title="title" :stepper="stepper">
       <v-form v-model="valid" slot="step-one" ref="form" lazy-validation>
         {{ edit }}
         <v-img
-          :src="data.imageCharge ? `${this.$store.getters.getFeatherUrl}images-advertisements/${data.path}` : imageUrl"
-          :lazy-src="data.imageCharge ? `${this.$store.getters.getFeatherUrl}images-advertisements/${data.path}` : imageUrl"
+          :src="data.imageCharge ? `${this.$store.getters.getFeatherUrl}storage/images-advertisements/${data.path}` : imageUrl"
+          :lazy-src="data.imageCharge ? `${this.$store.getters.getFeatherUrl}storage/images-advertisements/${data.path}` : imageUrl"
           aspect-ratio="0"
           height="400px"
           class="grey lighten-4"
@@ -45,7 +61,7 @@
           v-model="data.title"
           :rules="titleRules"
           :counter="80"
-          label="Título"
+          label="Título *"
           required>
         </v-text-field>
 
@@ -71,7 +87,7 @@
             item-value="departments.id"
             item-text="name"
             :rules="[v => !!v || 'Item is required']"
-            label="Departamento"
+            label="Departamento *"
             clearable
             required>
           </v-combobox>
@@ -83,7 +99,7 @@
           item-value="getSelectDepartment.id"
           item-text="name"
           :rules="[v => !!v || 'Item is required']"
-          label="Departamento"
+          label="Departamento *"
           clearable
           required>
         </v-combobox>
@@ -98,7 +114,7 @@
           <v-text-field
             slot="activator"
             v-model="date"
-            label="Fecha"
+            label="Fecha *"
             readonly
           ></v-text-field>
           <v-date-picker v-model="date" scrollable locale="es">
@@ -107,25 +123,6 @@
             <v-btn flat color="primary" @click="$refs.dialogDate.save(date)">OK</v-btn>
           </v-date-picker>
         </v-dialog>
-        <v-textarea
-          v-model="data.description"
-          label="Descripción"
-          :rules="descriptionRules"
-          :counter="1000"
-          auto-grow
-          class="my-3"
-          required>
-        </v-textarea>
-        <v-textarea
-          v-show="data.description !== null && data.description !== undefined && data.description !== ''"
-          v-model="data.fragment"
-          label="Fragmento de la noticia"
-          :rules="fragmentRules"
-          :counter="80"
-          auto-grow
-          class="my-3"
-          required>
-        </v-textarea>
         <v-dialog
           ref="dialogTime"
           v-model="modalTime"
@@ -169,6 +166,19 @@
             </v-chip>
           </template>
         </v-combobox>
+        <v-textarea
+          v-model="data.fragment"
+          label="Fragmento de la noticia *"
+          :rules="fragmentRules"
+          :counter="80"
+          auto-grow
+          class="my-3"
+          required>
+        </v-textarea>
+        <span class="subheading grey--text">Descripción * <span class="caption primary--text">(Beta)</span></span>
+        <v-flex xs12 mt-2 mb-3>
+          <vue-editor v-model="data.description" :rules="descriptionRules" required></vue-editor>
+        </v-flex>
         <template v-if="imageUrl || this.data.path">
           <v-btn color="primary" depressed :disabled="!valid" @click="verificationSubmit">
             Continuar
@@ -180,8 +190,8 @@
       <v-flex slot="step-two">
         <v-flex class="mb-4">
           <v-img
-            :src="data.imageCharge ? `${this.$store.getters.getFeatherUrl}images-advertisements/${data.path}` : imageUrl"
-            :lazy-src="data.imageCharge ? `${this.$store.getters.getFeatherUrl}images-advertisements/${data.path}` : imageUrl"
+            :src="data.imageCharge ? `${this.$store.getters.getFeatherUrl}storage/images-advertisements/${data.path}` : imageUrl"
+            :lazy-src="data.imageCharge ? `${this.$store.getters.getFeatherUrl}storage/images-advertisements/${data.path}` : imageUrl"
             aspect-ratio="0"
             height="400px"
             class="grey lighten-4">
@@ -203,22 +213,21 @@
           <div>
             <span class="font-weight-bold">Invitados: </span>
             <p v-for="g in data.guest" :key="g" class="mr-3 my-1">
-              {{g}}
+              {{ g }}
             </p>
           </div>
           <v-divider class="my-3"></v-divider>
 
           <p><span class="font-weight-bold">Fragment: </span>{{ data.fragment }}</p>
-          <p>
+          <div>
             <span class="font-weight-bold">Description: </span>
-            {{ data.description }}
-          </p>
+            <p v-html="data.description"></p>
+          </div>
 
         </v-flex>
         <v-btn color="primary" @click="saveData" v-text="action ? 'Crear' : 'Guardar'"></v-btn>
         <v-btn flat @click="stepper = 1">Cancel</v-btn>
       </v-flex>
-
     </CustomStepper>
   </CustomCard>
 </template>
@@ -231,6 +240,7 @@ import CustomStepper from '@/components/CustomStepper'
 import { createData, getDataWithParams } from '@/helper/data_getters'
 import { getCommitEdit, getDispatch, getDataFrom } from '@/helper/snnipets'
 import Axios from '@/plugins/axios'
+import { VueEditor } from 'vue2-editor'
 
 export default {
   name: 'CreateEditAdvertisements',
@@ -253,7 +263,8 @@ export default {
   },
   components: {
     CustomCard,
-    CustomStepper
+    CustomStepper,
+    VueEditor
   },
   data: () => ({
     stepper: 1,
@@ -284,8 +295,13 @@ export default {
 
     date: null,
     modalDate: false,
-    time: null,
-    modalTime: false
+    time: '',
+    modalTime: false,
+    //
+    circular_progress: false,
+    snackbar: false,
+    snackbar_message: 'Hola!',
+    snackbar_color: 'primary'
   }),
   mounted () {
     // $('html, body').animate({ scrollTop: 0 }, 'fast')
@@ -298,7 +314,7 @@ export default {
         this.$store.dispatch('getDataChurches')
       }
     } else {
-      if (this.getSelectDepartment.length) {
+      if (!this.getSelectDepartment) {
         return
       }
       getDataFrom(this.$store.getters.getCurrentUser.role_id, 'getDataDepartments', 'getDataDepartmentsWithParams')
@@ -343,7 +359,7 @@ export default {
           this.data.title = res.data.data[0].title
           this.data.description = res.data.data[0].description
           this.data.fragment = res.data.data[0].fragment
-          this.data.published = res.data.data[0].published === 1
+          this.data.published = res.data.data[0].published.toString() === '1'
           this.data.publicationDate = res.data.data[0].publicationDate
           this.departmentSelected = res.data.data[0].department
           this.date = res.data.data[0].eventDate
@@ -356,7 +372,7 @@ export default {
       }
     },
     isFeather () {
-      return this.$store.getters.getCurrentUser.role_id === 1
+      return this.$store.getters.getCurrentUser.role_id.toString() === '1'
     }
   },
 
@@ -381,23 +397,21 @@ export default {
     clear () {
       getCommitEdit(this.go, false)
       this.stepper = 1
-      // this.$refs.form.reset()
-
       this.data = {
-          title: null,
-          subTitle: null,
-          description: null,
-          fragment: null,
-          place: null,
-          guest: null,
-          publicationDate: null
+        title: null,
+        subTitle: null,
+        description: null,
+        fragment: null,
+        place: null,
+        guest: null,
+        publicationDate: null
       }
       this.imageUrl= ''
-      this.date = null
-      this.time = null
+      this.date = ''
+      this.time = ''
       this.$data.data.published = true
       this.parentSelected = null
-      this.departmentSelected = null
+      this.departmentSelected = ''
       this.selectRadio = 'unions'
 
       this.$store.commit('setEditAdvertisements', false)
@@ -405,47 +419,74 @@ export default {
       if (!this.action) { this.$router.push({ name: 'my-advertisements'}) }
     },
     saveData(){
+      // if (this.departmentSelected.id != null) {
+      // } else {
+      //   this.stepper = 1;
+      //   this.snackbar = true
+      //   this.snackbar_message = 'Falta seleccionar un departamento.'
+      //   this.snackbar_color = 'warning'
+      // }
       if (this.action) {
-        createData(this.go, {
-          'title': this.$data.data.title,
-          'department_id': this.departmentSelected.id,
-          'parent_code': this.isFeather ? this.parentSelected.code : this.$store.getters.getCurrentUser.code,
-          'publicationDate': new Date().toISOString().substr(0, 10),
-          'eventDate': this.$data.date,
-          'fragment': this.$data.data.fragment,
-          'description': this.$data.data.description,
-          'published': this.$data.data.published === true ? '1' : '0',
-          'image': this.$data.imageUrl,
-          'time': this.$data.time,
-          'place': this.$data.data.place,
-          'guest': this.$data.data.guest.toString()
-        }).then((res) => {
-          this.clear()
-        })
-        // TODO Add finally
-      } else {
-       Axios.put('api/test/ad/update/' + this.$data.data.id, {
-          'title': this.$data.data.title,
-          'department_id': this.departmentSelected.id,
-          'parent_code': this.isFeather ? this.parentSelected.code : this.$store.getters.getCurrentUser.code,
-          'publicationDate': this.$data.data.publicationDate,
-          'eventDate': this.$data.date,
-          'fragment': this.$data.data.fragment,
-          'description': this.$data.data.description,
-          'published': this.$data.data.published === true ? '1' : '0',
-          'image': this.$data.imageUrl,
-          'image_charge': this.data.imageCharge,
-          'path': this.$data.data.path,
-          'time': this.$data.time,
-          'place': this.$data.data.place,
-          'guest': this.$data.data.guest.toString(),
-        }).then(res => {
-          getCommitEdit(this.go, false)
-          getDispatch(this.go)
-          this.clear()
-          this.$router.push({ name: 'my-advertisements'})
-        }).catch(err => console.log(err))
-      }
+          
+          this.circular_progress = true
+          createData(this.go, {
+            'title': this.$data.data.title,
+            'department_id': this.departmentSelected.id,
+            'parent_code': this.isFeather ? this.parentSelected.code : this.$store.getters.getCurrentUser.code,
+            'publicationDate': new Date().toISOString().substr(0, 10),
+            'eventDate': this.$data.date,
+            'fragment': this.$data.data.fragment,
+            'description': this.$data.data.description,
+            'published': this.$data.data.published === true ? '1' : '0',
+            'image': this.$data.imageUrl,
+            'time': this.$data.time,
+            'place': this.$data.data.place,
+            'guest': this.$data.data.guest.toString()
+          }).then((res) => {
+            this.circular_progress = false
+            console.log(res)
+            this.snackbar = true
+            this.snackbar_color = 'primary'
+            this.snackbar_message = 'Se ha creado correctamente.'
+            
+            this.clear()
+            // fth actualizar
+            // if (res.data.response) {
+            // } else {
+            //   this.stepper = 1
+            // }
+          })
+        } else {
+          this.circular_progress = true
+          Axios.put('api/test/ad/update/' + this.$data.data.id, {
+            'title': this.$data.data.title,
+            'department_id': this.departmentSelected.id,
+            'parent_code': this.isFeather ? this.parentSelected.code : this.$store.getters.getCurrentUser.code,
+            'publicationDate': this.$data.data.publicationDate,
+            'eventDate': this.$data.date,
+            'fragment': this.$data.data.fragment,
+            'description': this.$data.data.description,
+            'published': this.$data.data.published === true ? '1' : '0',
+            'image': this.$data.imageUrl,
+            'image_charge': this.data.imageCharge,
+            'path': this.$data.data.path,
+            'time': this.$data.time,
+            'place': this.$data.data.place,
+            'guest': this.$data.data.guest.toString(),
+          }).then(res => {
+            this.circular_progress = false
+            getCommitEdit(this.go, false)
+            getDispatch(this.go)
+            this.clear()
+            this.$router.push({ name: 'my-advertisements'})
+            this.snackbar = true
+            this.snackbar_color = 'primary'
+            this.snackbar_message = 'Se ha editado correctamente.'
+            // if (res.data.response) {
+            // } else {
+            // }
+          })
+        }
     },
     // Image
     pickFile () {

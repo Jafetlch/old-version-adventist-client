@@ -1,6 +1,24 @@
 <template>
   <CustomCard :title="action ? 'Crear' : 'Editar'" second-title="Lista" show-min>
-    <CustomStepper v-if="action" :title="title" :stepper="stepper" :show-second-stepper="false">
+    <v-snackbar
+      v-model="snackbar"
+      :timeout="6000"
+      :color="snackbar_color"
+      :top="true"
+      :right="true">
+      {{ snackbar_message }}
+      <v-btn
+        flat
+        @click="snackbar = false">
+        Close
+      </v-btn>
+    </v-snackbar>
+    <v-card v-if="circular_progress">
+      <v-layout row wrap align-center justify-center pa-5>
+        <v-progress-circular size="45" indeterminate color="primary"></v-progress-circular>
+      </v-layout>
+    </v-card>
+    <CustomStepper v-show="!circular_progress" v-if="action" :title="title" :stepper="stepper" :show-second-stepper="false">
       <v-form v-model="valid" slot="step-one" ref="form" lazy-validation>
         <v-text-field
           v-model="data.name"
@@ -33,7 +51,7 @@
         </v-btn>
       </v-form>
     </CustomStepper>
-    <v-card v-else>
+    <v-card v-show="!circular_progress" v-else>
       <v-card-text>
         <v-form v-model="valid" ref="form" lazy-validation>
           {{ edit }}
@@ -115,7 +133,12 @@ export default {
     },
     nameCounter: 50,
     selected: null,
-    selectRadio: 'unions'
+    selectRadio: 'unions',
+
+    circular_progress: false,
+    snackbar: false,
+    snackbar_message: 'Hola!',
+    snackbar_color: 'primary'
   }),
   mounted () {
     if (this.getSelectedData.length) {
@@ -155,7 +178,8 @@ export default {
   },
   methods: {
     verificationSubmit () {
-      if (this.$refs.form.validate()) {        
+      if (this.$refs.form.validate()) {
+        this.circular_progress = true   
         if (this.action) {
           createData(this.go, {
             'name': this.$data.data.name,
@@ -164,6 +188,10 @@ export default {
           }).then((res) => {
             getDispatch(this.go)
             this.clear()
+            this.circular_progress = false
+            this.snackbar = true
+            this.snackbar_color = 'primary'
+            this.snackbar_message = 'Se ha creado correctamente.'
           })
         } else {
           editData(this.go, this.$data.data.id, {
@@ -174,6 +202,10 @@ export default {
             getCommitEdit(this.go, false)
             getDispatch(this.go)
             this.clear()
+            this.circular_progress = false
+            this.snackbar = true
+            this.snackbar_color = 'primary'
+            this.snackbar_message = 'Se ha editado correctamente.'
           })
         }
       }

@@ -7,7 +7,7 @@ const currentUserMixing = {
       return store.getters.getCurrentUser
     },
     currentUserRoleId () {
-      return store.getters.getCurrentUser.role_id
+      return store.getters.getCurrentUser.role_id.toString() //* on beta
     }
   }
 }

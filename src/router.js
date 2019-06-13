@@ -20,11 +20,11 @@ function myRole () {
     return null
   }
   const data = JSON.parse(role)
-  return data.role_id
+  return data.role_id.toString() //* on beta
 }
 
 export default new Router({
-  mode: 'history',
+  // mode: 'history', // ! only on hosting mode!
   base: process.env.BASE_URL,
   routes: [
     {
