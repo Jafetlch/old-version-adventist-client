@@ -5,9 +5,9 @@ export function inilializer (store, router) {
 
     if (requiresAuth && !currentUser) {
       //! cambiar si se quiere otra ruta de entrada!
-      next('/login')
+      next({ name: 'login' })
     } else if (to.path === '/login' && currentUser) {
-      next('/dashboard')
+      next({ name: 'dashboard' })
     } else {
       next()
     }

@@ -31,7 +31,7 @@ const authMutations = {
 
 const authActions = {
   login (context) {
-    context.commit('seLogin')
+    context.commit('setLogin')
   },
   logout (context) {
     logout()

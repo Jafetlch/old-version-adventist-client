@@ -258,7 +258,7 @@ export default {
     },
     go: {
       type: String,
-      default: 'advertisements'
+      default: 'news'
     }
   },
   components: {
@@ -354,21 +354,20 @@ export default {
     /* eslint-disable */
     edit () {
       if (!this.action) {
-        Axios.post('api/advertisement', { 'id': this.$store.getters.getIdAdvertisements }).then(res => {
-          this.data.id = res.data.data[0].id
-          this.data.title = res.data.data[0].title
-          this.data.description = res.data.data[0].description
-          this.data.fragment = res.data.data[0].fragment
-          this.data.published = res.data.data[0].published.toString() === '1'
-          this.data.publicationDate = res.data.data[0].publicationDate
-          this.departmentSelected = res.data.data[0].department
-          this.date = res.data.data[0].eventDate
-          this.time = res.data.data[0].time
-          this.data.place = res.data.data[0].place
-          this.data.guest = res.data.data[0].guest ? res.data.data[0].guest.split(",") : ''
-          this.data.imageCharge = true
-          this.data.path = res.data.data[0].image.path
-        })
+        const dataNews = this.$store.getters.getIdAdvertisements
+        this.data.id = dataNews.id
+        this.data.title = dataNews.title
+        this.data.description = dataNews.description
+        this.data.fragment = dataNews.fragment
+        this.data.published = dataNews.published.toString() === '1'
+        this.data.publicationDate = dataNews.publicationDate
+        this.departmentSelected = dataNews.department
+        this.date = dataNews.eventDate
+        this.time = dataNews.time
+        this.data.place = dataNews.place
+        this.data.guest = dataNews.guest ? dataNews.guest.split(",") : ''
+        this.data.imageCharge = true
+        this.data.path = dataNews.image.path
       }
     },
     isFeather () {
@@ -416,18 +415,11 @@ export default {
 
       this.$store.commit('setEditAdvertisements', false)
       this.$store.commit('setDeleteAdvertisements', false)
+      this.$store.commit('setIdAdvertisements', null)
       if (!this.action) { this.$router.push({ name: 'my-advertisements'}) }
     },
     saveData(){
-      // if (this.departmentSelected.id != null) {
-      // } else {
-      //   this.stepper = 1;
-      //   this.snackbar = true
-      //   this.snackbar_message = 'Falta seleccionar un departamento.'
-      //   this.snackbar_color = 'warning'
-      // }
       if (this.action) {
-          
           this.circular_progress = true
           createData(this.go, {
             'title': this.$data.data.title,
@@ -439,22 +431,15 @@ export default {
             'description': this.$data.data.description,
             'published': this.$data.data.published === true ? '1' : '0',
             'image': this.$data.imageUrl,
-            'time': this.$data.time,
-            'place': this.$data.data.place,
-            'guest': this.$data.data.guest.toString()
+            'time': this.$data.time ? this.$data.time : 'feather_empty',
+            'place': this.$data.data.place ? this.$data.data.place : 'feather_empty',
+            'guest': this.$data.data.guest ? this.$data.data.guest.toString() : 'feather_empty'
           }).then((res) => {
             this.circular_progress = false
-            console.log(res)
             this.snackbar = true
             this.snackbar_color = 'primary'
             this.snackbar_message = 'Se ha creado correctamente.'
-            
             this.clear()
-            // fth actualizar
-            // if (res.data.response) {
-            // } else {
-            //   this.stepper = 1
-            // }
           })
         } else {
           this.circular_progress = true

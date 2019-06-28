@@ -2,9 +2,10 @@ import axios from 'axios'
 import store from '@/store/store'
 import router from '@/router'
 
+import URL from '@/helper/url'
+
 var api = axios.create({
-  baseURL: 'http://localhost:6060',
-  // baseURL: 'http://adnews-back.f34th3r.io', //! online server
+  baseURL: URL.server,
   'headers': {
     'X-Requested-With': 'XMLHttpRequest'
   }

@@ -57,7 +57,7 @@ const advertisementMutations = {
 
 const advertisementActions = {
   getAdvertisements (context) {
-    getData('advertisements').then((res) => {
+    getData('news').then((res) => {
       context.commit('setAdvertisements', res)
     })
   }

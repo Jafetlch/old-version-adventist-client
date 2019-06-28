@@ -1,14 +1,35 @@
 <template>
   <CustomHeader :title="title" second-title="Comentarios">
+   <v-snackbar
+      v-model="snackbar"
+      :timeout="6000"
+      :color="snackbar_color"
+      :top="true"
+      :right="true">
+      {{ snackbar_message }}
+      <v-btn
+        flat
+        @click="snackbar = false">
+        Close
+      </v-btn>
+    </v-snackbar>
     <CustomCard title="Usuario" :showMin="false">
-      <v-card >
+      <v-card flat v-if="circular_progress">
+        <v-layout row wrap align-center justify-center pa-5>
+          <v-progress-circular size="45" indeterminate color="primary"></v-progress-circular>
+        </v-layout>
+      </v-card>
+      <v-card flat v-else>
         <v-layout row wrap>
           <v-flex xs12>
             <v-card-text>
-              <p>Message</p>
+              <span class="headers primary--text">* Importante</span>
+              <v-spacer></v-spacer>
+              <span>Para poder cambiar el nombre de usuario se requiere hablar con el <em>superior</em> de esta cuenta.</span>
             </v-card-text>
           </v-flex>
-          <v-flex xs12 md8 lg6>
+           <!-- // ! se a ocultado poder cambiar de nombre de usuario por medidas de seguridad y orden -->
+          <v-flex xs12 md6 xl4 v-if="false">
             <v-card-text>
               <v-form v-model="valid" ref="formUsername" lazy-validation>
                 <span class="subheading">Cambiar nombre de usuario</span>
@@ -22,15 +43,15 @@
                 <v-text-field
                   label="Verificar contraseña"
                   v-model="dataForm.usernamePwd"
-                  :append-icon="showPwd ? 'visibility_off' : 'visibility'"
+                  :append-icon="showPwdUsername ? 'visibility_off' : 'visibility'"
                   :rules="requiredRule"
-                  :type="showPwd ? 'text' : 'password'"
-                  @click:append="showPwd = !showPwd"
+                  :type="showPwdUsername ? 'text' : 'password'"
+                  @click:append="showPwdUsername = !showPwdUsername"
                   @keyup.enter="authenticate"
                   clearable
                   required
                 ></v-text-field>
-                <v-btn color="primary" @click="saveData('username')">
+                <v-btn color="primary" @click="saveUsarname">
                   Guardar
                 </v-btn>
                 <v-btn flat @click="cancel('username')">
@@ -39,17 +60,14 @@
               </v-form>
             </v-card-text>
           </v-flex>
-        </v-layout>
-        <v-divider></v-divider>
-        <v-layout row wrap>
-          <v-flex xs12 md8 lg6>
+          <v-flex xs12 md6 xl4>
             <v-card-text>
               <v-form v-model="valid" ref="formEmail" lazy-validation>
                 <span class="subheading">Cambiar correo <span class="caption primary--text">(Beta)</span></span>
                 <v-text-field
                   disabled
                   v-model="dataForm.email"
-                  label="Nombre"
+                  label="E-mail"
                   :rules="nameRule"
                   :counter="counter.name"
                   required>
@@ -58,16 +76,16 @@
                   disabled
                   label="password"
                   v-model="dataForm.emailPwd"
-                  :append-icon="showPwd ? 'visibility_off' : 'visibility'"
+                  :append-icon="showPwdEmail ? 'visibility_off' : 'visibility'"
                   :rules="requiredRule"
-                  :type="showPwd ? 'text' : 'password'"
-                  @click:append="showPwd = !showPwd"
+                  :type="showPwdEmail ? 'text' : 'password'"
+                  @click:append="showPwdEmail = !showPwdEmail"
                   clearable
                   required
                   @keyup.enter="authenticate"
                 ></v-text-field>
               </v-form>
-              <v-btn disabled color="primary" @click="saveData('email')">
+              <v-btn disabled color="primary" @click="saveEmail">
                 Guardar
               </v-btn>
               <v-btn disabled flat @click="cancel('email')">
@@ -75,48 +93,43 @@
               </v-btn>
             </v-card-text>
           </v-flex>
-        </v-layout>
-        <v-divider></v-divider>
-
-        <v-layout row wrap>
-          <v-flex xs12 md8 lg6>
+          <v-flex xs12 md6 xl4>
             <v-card-text>
               <v-form v-model="valid" ref="formPwd" lazy-validation>
-                <span class="subheading">Cambiar correo</span>
+                <span class="subheading">Cambiar contraseña</span>
                 <v-text-field
-                  label="Vieja Contraseña"
-                  v-model="dataForm.oldPwd"
-                  :append-icon="showPwd ? 'visibility_off' : 'visibility'"
+                  label="Contraseña actual"
+                  v-model="dataForm.pwdOld"
+                  :append-icon="showPwdOld ? 'visibility_off' : 'visibility'"
                   :rules="requiredRule"
-                  :type="showPwd ? 'text' : 'password'"
-                  @click:append="showPwd = !showPwd"
+                  :type="showPwdOld ? 'text' : 'password'"
+                  @click:append="showPwdOld = !showPwdOld"
                   clearable
                   required
-                  @keyup.enter="authenticate"
                 ></v-text-field>
                 <v-text-field
                   label="Contraseña nueva"
-                  v-model="dataForm.pdwNew"
-                  :append-icon="showPwd ? 'visibility_off' : 'visibility'"
-                  :rules="requiredRule"
-                  :type="showPwd ? 'text' : 'password'"
-                  @click:append="showPwd = !showPwd"
+                  v-model="dataForm.pwdNew"
+                  :append-icon="showPwdNew ? 'visibility_off' : 'visibility'"
+                  :rules="pwdRule"
+                  :type="showPwdNew ? 'text' : 'password'"
+                  @click:append="showPwdNew = !showPwdNew"
                   clearable
                   required
-                  @keyup.enter="authenticate"
                 ></v-text-field>
                 <v-text-field
+                  v-show="dataForm.pwdNew && dataForm.pwdOld"
                   label="Verificar Contraseña"
                   v-model="dataForm.pdwCompare"
-                  :append-icon="showPwd ? 'visibility_off' : 'visibility'"
-                  :rules="requiredRule"
-                  :type="showPwd ? 'text' : 'password'"
-                  @click:append="showPwd = !showPwd"
+                  :append-icon="showPwdCompare ? 'visibility_off' : 'visibility'"
+                  :rules="pwdRule"
+                  :type="showPwdCompare ? 'text' : 'password'"
+                  @click:append="showPwdCompare = !showPwdCompare"
                   clearable
                   required
                   @keyup.enter="authenticate"
                 ></v-text-field>
-                <v-btn color="primary" @click="saveData('pwd')">
+                <v-btn :disabled="pwdBtnDisable" color="primary" @click="savePassword">
                   Guardar
                 </v-btn>
                 <v-btn flat @click="cancel('pwd')">
@@ -128,7 +141,7 @@
         </v-layout>
       </v-card>
     </CustomCard>
-   <v-card>
+    <v-card flat>
      <!-- //* On Beta -->
       <v-card-text v-if="this.$store.getters.getCurrentUser.role_id.toString() === '1'">
         <span class="title">Comentarios:</span>
@@ -146,25 +159,36 @@
       <v-divider></v-divider>
       <!-- //* On Beta -->
       <v-card-text v-if="this.$store.getters.getCurrentUser.role_id.toString() !== '1'">
-        <vue-editor v-model="content"></vue-editor>
-        <v-flex xs12>
-          <v-btn block color="success" @click="saveData('comment')">Enviar</v-btn>
-        </v-flex>
+        <v-layout row wrap my-3>
+          <v-flex xs12>
+            <span>Todos los comentarios o dudas son bienvenidas.</span>
+            <v-spacer></v-spacer>
+            <span class="caption grey--text">Atentamente el administrados.</span>
+          </v-flex>
+        </v-layout>
+        <v-layout v-if="circular_progress_comment" row wrap align-center justify-center pa-5>
+          <v-progress-circular size="45" indeterminate color="success"></v-progress-circular>
+        </v-layout>
+        <v-layout v-else row wrap>
+          <v-flex xs12>
+            <vue-editor v-model="content"></vue-editor>
+            <v-btn :disabled="!this.content" block color="success" @click="saveComment">Enviar</v-btn>
+          </v-flex>
+        </v-layout>
       </v-card-text>
+      <v-flex xs12>
+          <v-card-text>
+            <v-layout row justify-end align-end>
+              <span class="grey--text">{{ this.$store.getters.getCurrentVersion }}</span>
+            </v-layout>
+          </v-card-text>
+      </v-flex>
     </v-card>
-    <v-snackbar
-      v-model="snackbar"
-      color="error"
-      :timeout="5000"
-      top>
-      {{ snackbarMessage }}
-      <v-btn dark flat color="white" @click.native="snackbar = false">Close</v-btn>
-    </v-snackbar>
   </CustomHeader>
 </template>
 
 <script>
-import { getData, createData } from '@/helper/data_getters'
+import { getData, createDataV2 } from '@/helper/data_getters'
 
 import formRulesMixin from '@/mixins/mixin_rules'
 import CustomHeader from '@/components/CustomHeader'
@@ -196,18 +220,22 @@ export default {
       usernamePwd: '',
       emailPwd: '',
       pwdOld: '',
-      pdwNew: '',
+      pwdNew: '',
       pdwCompare: ''
     },
     dataComment: null,
     content: '',
-    // options: {
-    //   // language_url: esLang
-    // },
-    editorOption: {},
-    showPwd: false,
+
+    showPwdEmail: false,
+    showPwdOld: false,
+    showPwdNew: false,
+    showPwdCompare: false,
+
     snackbar: false,
-    snackbarMessage: 'null'
+    snackbar_message: 'Hola!',
+    snackbar_color: 'primary',
+    circular_progress: false,
+    circular_progress_comment: false
   }),
   created () {
     this.initHeaders()
@@ -215,86 +243,113 @@ export default {
   mounted () {
     this.getData()
   },
+  computed: {
+    pwdBtnDisable () {
+      if (this.dataForm.pwdNew === this.dataForm.pdwCompare && !!this.dataForm.pdwCompare) {
+        return false
+      }
+      return true
+    }
+  },
   methods: {
     getData () {
       if (this.$store.getters.getCurrentUser.role_id.toString() === '1') { //* on beta
-        getData('beta/comments').then(res => {
+        getData('comments/list').then(response => {
           // console.log(res)
-          this.dataComment = res
-          return res
+          this.dataComment = response
+          return response
         })
       } else {
-        getData('beta/comments/user').then(res => {
-          // console.log(res.data)
-          this.dataComment = res
-          return res
-        })
+        return null
       }
     },
-    saveData (type) {
-      if (type === 'username') {
-        createData('user/change/username', {
-          'name': this.dataForm.name,
-          'pwd': this.dataForm.usernamePwd
-        }).then(res => {
-          if (res === true) {
-            this.snackbar = true
-            this.snackbarMessage = 'Se ha cambiado el nombre de usuario exitosamente!'
-            this.cancel('username')
-          } else {
-            this.snackbar = true
-            this.snackbarMessage = 'La contraseña no es la indicada.'
-          }
-        })
-      } else if (type === 'email') {
-        createData('user/change/email', {
-          'email': this.dataForm.email,
-          'pwd': this.dataForm.emailPwd
-        }).then(res => {
-          if (res === true) {
-            this.snackbar = true
-            this.snackbarMessage = 'Se ha cambiado el nombre el correo exitosamente!'
-            this.cancel('email')
-          } else {
-            this.snackbar = true
-            this.snackbarMessage = 'La contraseña no es la indicada.'
-          }
-        })
-      } else if (type === 'comment') {
-        createData('beta/comments/', {
-          'comment': this.content
-        }).then(res => {
-          if (res === true) {
-            this.snackbar = true
-            this.snackbarMessage = 'Gracias su comentario será revisado!'
-            this.content = ''
-          } else {
-            this.snackbar = true
-            this.snackbarMessage = 'Hubó un error, lo lamentamos.'
-          }
-        })
-      } else if (type === 'pwd') {
-        createData('user/change/password', {
-          'pwd_old': this.dataForm.pwdOld,
-          'pwd_new': this.dataForm.pdwNew
-        }).then(res => {
-          if (res === true) {
-            this.snackbar = true
-            this.snackbarMessage = 'Se ha cambiado la contraseña exitosamente!'
-            this.cancel('pwd')
-          } else {
-            this.snackbar = true
-            this.snackbarMessage = 'La contraseña no es la indicada.'
-          }
-        })
-      }
+    saveUsarname () {
+      this.circular_progress = true
+      createDataV2('settings/change/username', {
+        'name': this.dataForm.name,
+        'pwd': this.dataForm.usernamePwd
+      }).then(res => {
+        if (res === true) {
+          this.snackbar = true
+          this.snackbarMessage = 'Se ha cambiado el nombre de usuario exitosamente!'
+          this.cancel('username')
+        } else {
+          this.snackbar = true
+          this.snackbarMessage = 'La contraseña no es la indicada.'
+        }
+      })
+    },
+    saveEmail () {
+      this.circular_progress = true
+      createDataV2('settings/change/email', {
+        'email': this.dataForm.email,
+        'pwd': this.dataForm.emailPwd
+      }).then(res => {
+        if (res === true) {
+          this.snackbar = true
+          this.snackbar_message = 'Se ha cambiado el nombre el correo exitosamente!'
+          this.cancel('email')
+        } else {
+          this.snackbar = true
+          this.snackbar_message = 'La contraseña no es la indicada.'
+        }
+      })
+    },
+    savePassword () {
+      this.circular_progress = true
+      createDataV2('settings/change/password', {
+        'pwd_old': this.dataForm.pwdOld,
+        'pwd_new': this.dataForm.pwdNew
+      }).then(response => {
+        this.snackbar = true
+        if (response.data.response === true) {
+          this.snackbar_color = 'success'
+          this.snackbar_message = 'Se ha cambiado la contraseña exitosamente!'
+          this.circular_progress = false
+        } else {
+          this.snackbar_color = 'warning'
+          this.snackbar_message = 'La contraseña no es la indicada.'
+          this.circular_progress = false
+        }
+        this.dataForm.pwdOld = ''
+        this.dataForm.pwdNew = ''
+        this.dataForm.pdwCompare = ''
+        // this.snackbar = true
+        // this.snackbar_color = 'success'
+        // this.snackbar_message = 'Se ha cambiado la contraseña exitosamente!'
+        // this.cancel('pwd')
+        // this.circular_progress = false
+      })
+      // .catch(() => {
+      //   this.snackbar = true
+      //   this.snackbar_color = 'warning'
+      //   this.snackbar_message = 'La contraseña no es la indicada.'
+      //   this.circular_progress = false
+      // })
+    },
+    saveComment () {
+      this.circular_progress_comment = true
+      createDataV2('comments/store', {
+        'comment': this.content
+      }).then(res => {
+        this.snackbar = true
+        this.snackbar_color = 'success'
+        this.snackbar_message = 'Gracias su comentario, será revisado!'
+        this.content = ''
+        this.circular_progress_comment = false
+      }).catch(() => {
+        this.snackbar = true
+        this.snackbar_color = 'warning'
+        this.snackbar_message = 'Hubó un error, lo lamentamos.'
+        this.circular_progress_comment = false
+      })
     },
     cancel (type) {
       if (type === 'username') {
         this.$refs.formUsername.reset()
       } else if (type === 'email') {
         this.$refs.formEmail.reset()
-      } else {
+      } else if (type === 'pwd') {
         this.$refs.formPwd.reset()
       }
     },

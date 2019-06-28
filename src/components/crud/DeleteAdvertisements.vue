@@ -69,7 +69,7 @@ export default {
   methods: {
     deleteItem () {
       this.circular_progress = true
-      Axios.delete(`/api/adventist-adv/delete/${this.data.id.toString()}`).then(response => {
+      Axios.delete(`/api/news/${this.data.id.toString()}`).then(response => {
         this.snackbar = true
         this.$store.dispatch('getAdvertisements')
         this.snackbar_color = 'primary'

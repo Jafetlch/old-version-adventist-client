@@ -10,8 +10,16 @@ const formRulesMixin = {
       v => !!v || 'El e-mail es requerido.',
       v => /.+@.+/.test(v) || 'El e-mail debe de ser valido.'
     ],
+    // emailConfirmationRules: [
+    //   (v) => !!v || 'Confirmation E-mail is required',
+    //   (v) => v === this.email || 'E-mail must match'
+    // ],
     requiredRule: [
-      value => !!value || 'Es requerido.'
+      value => !!value || 'El campo es requerido.'
+    ],
+    pwdRule: [
+      value => !!value || 'El campo es requerido.',
+      value => (value && value.length >= 5) || 'El campo debe de tener más de 5 caracteres.'
     ],
     titleRules: [
       v => !!v || 'Title is required',

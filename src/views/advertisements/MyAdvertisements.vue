@@ -39,7 +39,7 @@
               <v-icon
                 small
                 class="mr-2"
-                @click="editItem(props.item.id)">
+                @click="editItem(props.item)">
                 edit
               </v-icon>
               <v-icon

@@ -65,8 +65,7 @@
             <td v-else>
               <v-icon
                 small
-                class="mr-2"
-                @click="cancelItem">
+                class="mr-2">
                 block
               </v-icon>
             </td>

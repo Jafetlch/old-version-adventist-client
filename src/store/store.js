@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
+import URL from '@/helper/url'
 import { getLocalUser } from '@/helper/auth'
 
 //! Stores
@@ -16,10 +17,9 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    // FEATHER_URL: 'http://192.168.0.9:6060/',
-    FEATHER_URL: 'http://localhost:6060/',
-    // FEATHER_URL: 'http://adnews-back.f34th3r.io/', //! online server
+    FEATHER_URL: URL.server,
     LOADING: false,
+    VERSION: 'Beta-v 0.6',
     USER: user,
     ...authState,
     ...unionState,
@@ -34,6 +34,9 @@ export default new Vuex.Store({
     },
     getFeatherUrl (state) {
       return state.FEATHER_URL
+    },
+    getCurrentVersion (state) {
+      return state.VERSION
     },
     ...unionGetters,
     ...groupGetters,

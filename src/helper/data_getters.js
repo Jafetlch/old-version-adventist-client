@@ -34,6 +34,12 @@ export function createData (api, parameters) {
   })
 }
 
+export function createDataV2 (api, parameters) {
+  return new Promise((res, rej) => {
+    Axios.post(`/api/${api}`, parameters).then(response => res(response))
+  })
+}
+
 export function editData (api, id, parameters) {
   return new Promise((res, rej) => {
     Axios.put(`/api/${api}/${id}`, parameters)
